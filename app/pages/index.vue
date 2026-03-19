@@ -1,5 +1,7 @@
 <script setup lang="ts">
-// Dashboard page with app tiles
+import HomeassistantImg from '~/public/Homeassistant.jpg'
+import JellyfinImg from '~/public/Jellyfin.jpg'
+import NammenamImg from '~/public/Nammenam.jpg'
 </script>
 
 <template>
@@ -10,16 +12,19 @@
         name="Homeassistant"
         url="http://192.168.0.246:8123/lovelace/default_view"
         icon="🏠"
+        :image="HomeassistantImg"
       />
       <AppTile
         name="nammenam"
         url="http://192.168.0.131:3001/"
         icon="🍽️"
+        :image="NammenamImg"
       />
       <AppTile
         name="Jellyfin"
         url="http://192.168.0.131:8096/web/#/home"
         icon="🎬"
+        :image="JellyfinImg"
       />
     </div>
   </main>
