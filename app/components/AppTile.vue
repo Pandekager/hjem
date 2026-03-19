@@ -38,8 +38,7 @@ defineProps<{
   background-size: cover;
   background-position: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  aspect-ratio: 16 / 9;
-  min-height: 200px;
+  min-height: 180px;
   position: relative;
   overflow: hidden;
 }
