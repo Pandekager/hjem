@@ -3,6 +3,7 @@ defineProps<{
   name: string
   url: string
   icon: string
+  image?: string
 }>()
 </script>
 
@@ -12,9 +13,14 @@ defineProps<{
     target="_blank"
     rel="noopener"
     class="tile"
+    :class="{ 'has-image': image }"
+    :style="image ? `background-image: url('${image}')` : ''"
   >
-    <span class="tile-icon">{{ icon }}</span>
-    <span class="tile-name">{{ name }}</span>
+    <div v-if="image" class="tile-overlay" />
+    <div class="tile-content">
+      <span class="tile-icon">{{ icon }}</span>
+      <span class="tile-name">{{ name }}</span>
+    </div>
   </a>
 </template>
 
@@ -22,28 +28,58 @@ defineProps<{
 .tile {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 2rem 1.5rem;
-  border: 1px solid #e5e7eb;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 1.5rem;
   border-radius: 0.75rem;
   text-decoration: none;
   color: inherit;
   background: white;
-  transition: box-shadow 0.2s, transform 0.2s;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 16 / 9;
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tile.has-image {
+  border: none;
 }
 
 .tile:hover {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  transform: translateY(-2px);
+  transform: scale(1.03);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+}
+
+.tile-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.tile-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .tile-icon {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
 }
 
-.tile-name {
+.tile.has-image .tile-name {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.tile:not(.has-image) .tile-name {
   font-size: 1rem;
   font-weight: 500;
   color: #374151;
