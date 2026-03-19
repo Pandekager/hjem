@@ -1,0 +1,15 @@
+services:
+  hjem:
+    build: .
+    container_name: hjem
+    ports:
+      - "3002:3002"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3002
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3002"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

@@ -6,7 +6,7 @@ import NammenamImg from "~/public/Nammenam.jpg";
 
 <template>
     <main class="dashboard">
-        <h1 class="dashboard-title">Apps</h1>
+        <h1 class="dashboard-title">Anna og Rasmus's apps :)</h1>
         <div class="tiles-grid">
             <AppTile
                 name="Homeassistant"
