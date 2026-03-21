@@ -5,11 +5,14 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - HOST=0.0.0.0
-      - PORT=3002
+      HOST: 0.0.0.0
+      PORT: 3002
+      NITRO_HOST: 0.0.0.0
+      NITRO_PORT: 3002
+      NODE_ENV: production
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3002"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3002"]
       interval: 30s
       timeout: 10s
       retries: 3
