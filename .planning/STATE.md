@@ -1,11 +1,27 @@
 # Project State
 
 **Project:** Hjem Dashboard
-**Last activity:** 2026-03-19 - Completed quick task 2: Update apps dashboard with photo backgrounds like Velvet Spectrum
+**Milestone:** v1.0
+**Milestone Name:** Minecraft Server Tile
+**Status:** planning
+**Progress:**
+  phases_complete: 0
+  phases_total: 0
+  plans_complete: 0
+  plans_total: 0
 
-### Quick Tasks Completed
+---
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Create apps dashboard page with tiles for Homeassistant, nammenam foodplanner, and Jellyfin | 2026-03-19 | 618a96d | [1-create-apps-dashboard-page-with-tiles-fo](./quick/1-create-apps-dashboard-page-with-tiles-fo/) |
-| 2 | Update apps dashboard with photo backgrounds like Velvet Spectrum | 2026-03-19 | 1af2660 | [2-update-apps-dashboard-with-photo-backgro](./quick/2-update-apps-dashboard-with-photo-backgro/) |
+## Current Position
+
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-29 — Milestone v1.0 started
+
+## Project Reference
+
+See: .planning/PROJECT.md (updated 2026-04-29)
+
+**Core value:** The family can access all their home services from one place without remembering URLs or IP addresses.
+**Current focus:** Minecraft Server Tile
