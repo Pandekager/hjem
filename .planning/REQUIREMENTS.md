@@ -75,33 +75,33 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HOST-01 | — | Pending |
-| HOST-02 | — | Pending |
-| HOST-03 | — | Pending |
-| HOST-04 | — | Pending |
-| DOCK-01 | — | Pending |
-| DOCK-02 | — | Pending |
-| API-01 | — | Pending |
-| API-02 | — | Pending |
-| API-03 | — | Pending |
-| API-04 | — | Pending |
-| API-05 | — | Pending |
-| API-06 | — | Pending |
-| TILE-01 | — | Pending |
-| TILE-02 | — | Pending |
-| TILE-03 | — | Pending |
-| TILE-04 | — | Pending |
-| TILE-05 | — | Pending |
-| TILE-06 | — | Pending |
-| TILE-07 | — | Pending |
-| POLISH-01 | — | Pending |
-| POLISH-02 | — | Pending |
-| POLISH-03 | — | Pending |
+| HOST-01 | Phase 1 | Pending |
+| HOST-02 | Phase 1 | Pending |
+| HOST-03 | Phase 1 | Pending |
+| HOST-04 | Phase 1 | Pending |
+| DOCK-01 | Phase 2 | Pending |
+| DOCK-02 | Phase 2 | Pending |
+| API-01 | Phase 3 | Pending |
+| API-02 | Phase 3 | Pending |
+| API-03 | Phase 3 | Pending |
+| API-04 | Phase 3 | Pending |
+| API-05 | Phase 3 | Pending |
+| API-06 | Phase 3 | Pending |
+| TILE-01 | Phase 4 | Pending |
+| TILE-02 | Phase 4 | Pending |
+| TILE-03 | Phase 4 | Pending |
+| TILE-04 | Phase 4 | Pending |
+| TILE-05 | Phase 4 | Pending |
+| TILE-06 | Phase 4 | Pending |
+| TILE-07 | Phase 4 | Pending |
+| POLISH-01 | Phase 5 | Pending |
+| POLISH-02 | Phase 5 | Pending |
+| POLISH-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 22 total
-- Mapped to phases: 0
-- Unmapped: 22 ⚠️
+- Mapped to phases: 22
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-29*
