@@ -10,21 +10,21 @@ import NammenamImg from "~/public/Nammenam.jpg";
 const apps = [
     {
         name: "Homeassistant",
-        url: "http://192.168.0.246:8123/lovelace/default_view",
+        url: "http://100.89.160.17:8123/lovelace/default_view",
         icon: "🏠",
         image: HomeassistantImg,
         description: 'Lys og andre ting Rasmus synes er "smarte"',
     },
     {
         name: "Nammenam",
-        url: "http://192.168.0.131:3001/",
+        url: "http://dilleur:3001/",
         icon: "🍽️",
         image: NammenamImg,
         description: "Indkøb og alle Anna-venlige opskrifter",
     },
     {
         name: "Jellyfin",
-        url: "http://192.168.0.131:8096/web/#/home",
+        url: "http://dilleur:8096/",
         icon: "🎬",
         image: JellyfinImg,
         description: "Film, serier og afslapning til filmaftener og regnvejr",
