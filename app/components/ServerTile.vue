@@ -6,6 +6,10 @@ const { data, error: fetchError, refresh } = useFetch('/api/mc/status');
 const serverState = ref<string | null>(null);
 const actionInProgress = ref(false);
 const actionError = ref<string | null>(null);
+const polling = ref(false);
+let pollTimer: ReturnType<typeof setInterval> | null = null;
+const POLL_INTERVAL = 2000;
+const POLL_TIMEOUT = 30000;
 
 // Initialize serverState from API response
 watchEffect(() => {
@@ -64,14 +68,15 @@ async function startServer() {
     try {
         await $fetch('/api/mc/start', { method: 'POST' });
         serverState.value = 'activating';
+        startPolling('active');
     } catch (e: any) {
         if (e?.response?.status === 409) {
             serverState.value = 'activating';
+            startPolling('active');
         } else {
             actionError.value = 'Kunne ikke starte serveren';
+            actionInProgress.value = false;
         }
-    } finally {
-        actionInProgress.value = false;
     }
 }
 
@@ -81,16 +86,50 @@ async function stopServer() {
     try {
         await $fetch('/api/mc/stop', { method: 'POST' });
         serverState.value = 'deactivating';
+        startPolling('inactive');
     } catch (e: any) {
         if (e?.response?.status === 409) {
             serverState.value = 'deactivating';
+            startPolling('inactive');
         } else {
             actionError.value = 'Kunne ikke stoppe serveren';
+            actionInProgress.value = false;
         }
-    } finally {
-        actionInProgress.value = false;
     }
 }
+
+function startPolling(targetState: string) {
+    polling.value = true;
+    let elapsed = 0;
+    pollTimer = setInterval(async () => {
+        elapsed += POLL_INTERVAL;
+        try {
+            const res = await $fetch<{ state: string }>('/api/mc/status');
+            serverState.value = res.state;
+            if (res.state === targetState || res.state === 'failed' || elapsed >= POLL_TIMEOUT) {
+                stopPolling();
+            }
+        } catch {
+            if (elapsed >= POLL_TIMEOUT) {
+                stopPolling();
+                actionError.value = 'Tidsudløb ved poll';
+            }
+        }
+    }, POLL_INTERVAL);
+}
+
+function stopPolling() {
+    if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+    }
+    polling.value = false;
+    actionInProgress.value = false;
+}
+
+onUnmounted(() => {
+    stopPolling();
+});
 
 function retry() {
     actionError.value = null;
