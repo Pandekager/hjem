@@ -7,11 +7,15 @@ const serverState = ref<string | null>(null);
 const actionInProgress = ref(false);
 const actionError = ref<string | null>(null);
 const polling = ref(false);
+const crashed = ref(false);
+const stopTimedOut = ref(false);
 let pollTimer: ReturnType<typeof setInterval> | null = null;
+let crashTimer: ReturnType<typeof setInterval> | null = null;
 const POLL_INTERVAL = 2000;
 const POLL_TIMEOUT = 30000;
+const STOP_TIMEOUT = 60000;
+const CRASH_CHECK_INTERVAL = 10000;
 
-// Initialize serverState from API response
 watchEffect(() => {
     if (data.value?.state) {
         serverState.value = data.value.state;
@@ -23,6 +27,14 @@ const hasFetchError = computed(() => !!fetchError.value);
 const stateConfig = computed(() => {
     if (hasFetchError.value) {
         return { color: '#ef4444', label: 'Ingen forbindelse' };
+    }
+
+    if (crashed.value) {
+        return { color: '#ef4444', label: 'Lukket uventet' };
+    }
+
+    if (stopTimedOut.value) {
+        return { color: '#f97316', label: 'Stopper... (fastlåst)' };
     }
 
     if (serverState.value === null) {
@@ -50,12 +62,17 @@ const showStart = computed(() => {
     return (
         serverState.value === 'inactive' ||
         serverState.value === 'not-found' ||
-        serverState.value === 'failed'
+        serverState.value === 'failed' ||
+        crashed.value
     );
 });
 
 const showStop = computed(() => {
     return serverState.value === 'active';
+});
+
+const showForceKill = computed(() => {
+    return stopTimedOut.value;
 });
 
 const showRetry = computed(() => {
@@ -65,14 +82,16 @@ const showRetry = computed(() => {
 async function startServer() {
     actionInProgress.value = true;
     actionError.value = null;
+    crashed.value = false;
+    stopTimedOut.value = false;
     try {
         await $fetch('/api/mc/start', { method: 'POST' });
         serverState.value = 'activating';
-        startPolling('active');
+        startPolling('active', POLL_TIMEOUT);
     } catch (e: any) {
         if (e?.response?.status === 409) {
             serverState.value = 'activating';
-            startPolling('active');
+            startPolling('active', POLL_TIMEOUT);
         } else {
             actionError.value = 'Kunne ikke starte serveren';
             actionInProgress.value = false;
@@ -83,14 +102,15 @@ async function startServer() {
 async function stopServer() {
     actionInProgress.value = true;
     actionError.value = null;
+    stopTimedOut.value = false;
     try {
         await $fetch('/api/mc/stop', { method: 'POST' });
         serverState.value = 'deactivating';
-        startPolling('inactive');
+        startPolling('inactive', STOP_TIMEOUT);
     } catch (e: any) {
         if (e?.response?.status === 409) {
             serverState.value = 'deactivating';
-            startPolling('inactive');
+            startPolling('inactive', STOP_TIMEOUT);
         } else {
             actionError.value = 'Kunne ikke stoppe serveren';
             actionInProgress.value = false;
@@ -98,24 +118,73 @@ async function stopServer() {
     }
 }
 
-function startPolling(targetState: string) {
+async function forceKillServer() {
+    actionInProgress.value = true;
+    actionError.value = null;
+    try {
+        await $fetch('/api/mc/kill', { method: 'POST' });
+        stopTimedOut.value = false;
+        serverState.value = 'deactivating';
+        startPolling('inactive', POLL_TIMEOUT);
+    } catch (e: any) {
+        actionError.value = 'Kunne ikke slå serveren fra';
+        actionInProgress.value = false;
+    }
+}
+
+function startPolling(targetState: string, timeout: number) {
     polling.value = true;
     let elapsed = 0;
+    stopCrashMonitor();
     pollTimer = setInterval(async () => {
         elapsed += POLL_INTERVAL;
         try {
             const res = await $fetch<{ state: string }>('/api/mc/status');
             serverState.value = res.state;
-            if (res.state === targetState || res.state === 'failed' || elapsed >= POLL_TIMEOUT) {
+            if (res.state === targetState || res.state === 'failed') {
                 stopPolling();
+                if (res.state === 'failed' && targetState === 'inactive') {
+                    crashed.value = true;
+                }
+            } else if (elapsed >= timeout) {
+                if (targetState === 'inactive') {
+                    stopTimedOut.value = true;
+                    stopPolling();
+                } else {
+                    stopPolling();
+                }
             }
         } catch {
-            if (elapsed >= POLL_TIMEOUT) {
+            if (elapsed >= timeout) {
                 stopPolling();
-                actionError.value = 'Tidsudløb ved poll';
             }
         }
     }, POLL_INTERVAL);
+}
+
+function startCrashMonitor() {
+    stopCrashMonitor();
+    crashTimer = setInterval(async () => {
+        if (crashed.value || stopTimedOut.value || polling.value) return;
+        if (!serverState.value) return;
+        const prev = serverState.value;
+        try {
+            const res = await $fetch<{ state: string }>('/api/mc/status');
+            serverState.value = res.state;
+            if (prev === 'active' && res.state !== 'active' && res.state !== 'activating') {
+                crashed.value = true;
+            }
+        } catch {
+            // ignore
+        }
+    }, CRASH_CHECK_INTERVAL);
+}
+
+function stopCrashMonitor() {
+    if (crashTimer) {
+        clearInterval(crashTimer);
+        crashTimer = null;
+    }
 }
 
 function stopPolling() {
@@ -125,14 +194,18 @@ function stopPolling() {
     }
     polling.value = false;
     actionInProgress.value = false;
+    startCrashMonitor();
 }
 
 onUnmounted(() => {
     stopPolling();
+    stopCrashMonitor();
 });
 
 function retry() {
     actionError.value = null;
+    crashed.value = false;
+    stopTimedOut.value = false;
     refresh();
 }
 </script>
@@ -173,6 +246,14 @@ function retry() {
                     @click="stopServer"
                 >
                     Stop
+                </button>
+                <button
+                    v-if="showForceKill"
+                    class="tile-action force-kill"
+                    :disabled="actionInProgress"
+                    @click="forceKillServer"
+                >
+                    Tving Stop
                 </button>
                 <button
                     v-if="showRetry"
@@ -351,6 +432,15 @@ function retry() {
 
 .tile-action:not(:disabled):hover {
     background: rgba(255, 247, 240, 1);
+}
+
+.tile-action.force-kill {
+    background: rgba(239, 68, 68, 0.85);
+    color: white;
+}
+
+.tile-action.force-kill:not(:disabled):hover {
+    background: rgba(239, 68, 68, 1);
 }
 
 @media (max-width: 640px) {

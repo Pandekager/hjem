@@ -86,3 +86,26 @@ export async function stopUnit(
     )
   }
 }
+
+const KILL_WHO = 'main'
+const KILL_SIGNAL = 9
+
+export async function killUnit(
+  unitName: string,
+): Promise<{ success: boolean }> {
+  try {
+    const b = await getBus()
+    const unitPath = await getUnitPath(unitName)
+    const proxy = await b.getProxyObject(
+      'org.freedesktop.systemd1',
+      unitPath,
+    )
+    const unitIface = proxy.getInterface('org.freedesktop.systemd1.Unit')
+    await unitIface.Kill(KILL_WHO, KILL_SIGNAL)
+    return { success: true }
+  } catch (err: any) {
+    throw new Error(
+      `Failed to kill unit "${unitName}": ${err?.message ?? err}`,
+    )
+  }
+}

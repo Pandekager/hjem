@@ -40,9 +40,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### P2 Polish
 
-- [ ] **POLISH-01**: Status auto-polls after start (every 2s for up to 30s) and stop actions until settled
-- [ ] **POLISH-02**: Server crash detected via periodic polling (unexpected status change to inactive/failed)
-- [ ] **POLISH-03**: Stop timeout with force kill fallback (offers hard kill if graceful stop exceeds 60s)
+- [x] **POLISH-01**: Status auto-polls after start (every 2s for up to 30s) and stop actions until settled
+- [x] **POLISH-02**: Server crash detected via periodic polling (unexpected status change to inactive/failed)
+- [x] **POLISH-03**: Stop timeout with force kill fallback (offers hard kill if graceful stop exceeds 60s)
 
 ## v2 Requirements
 
@@ -94,9 +94,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TILE-05 | Phase 4 | Complete |
 | TILE-06 | Phase 4 | Complete |
 | TILE-07 | Phase 4 | Complete |
-| POLISH-01 | Phase 5 | Pending |
-| POLISH-02 | Phase 5 | Pending |
-| POLISH-03 | Phase 5 | Pending |
+| POLISH-01 | Phase 5 | Complete |
+| POLISH-02 | Phase 5 | Complete |
+| POLISH-03 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 22 total
