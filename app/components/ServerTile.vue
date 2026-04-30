@@ -1,92 +1,63 @@
 <script setup lang="ts">
 import MinecraftImg from '~/public/minecraft-better-minecraft.jpg';
 
-const { data, error: fetchError, refresh } = useFetch('/api/mc/status');
-
-const serverState = ref<string | null>(null);
+const status = ref<string | null>(null);
 const actionInProgress = ref(false);
 const actionError = ref<string | null>(null);
-const polling = ref(false);
 const crashed = ref(false);
 const stopTimedOut = ref(false);
+
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 let crashTimer: ReturnType<typeof setInterval> | null = null;
-const POLL_INTERVAL = 2000;
-const POLL_TIMEOUT = 30000;
-const STOP_TIMEOUT = 60000;
-const CRASH_CHECK_INTERVAL = 10000;
 
-watchEffect(() => {
-    if (data.value?.state) {
-        serverState.value = data.value.state;
+onMounted(async () => {
+    try {
+        const res = await $fetch<{ state: string }>('/api/mc/status');
+        status.value = res.state;
+    } catch {
+        // API unreachable — stateConfig shows "Ingen forbindelse"
     }
+    startCrashMonitor();
 });
 
-const hasFetchError = computed(() => !!fetchError.value);
+onUnmounted(() => {
+    stopPolling();
+    stopCrashMonitor();
+});
 
 const dotClass = computed(() => {
-    if (hasFetchError.value || crashed.value) return 'dot-error';
-    const s = serverState.value;
-    if (s === 'active') return 'dot-active';
-    if (s === 'activating') return 'dot-activating';
-    if (s === 'deactivating' || stopTimedOut.value) return 'dot-deactivating';
+    if (crashed.value) return 'dot-error';
+    if (status.value === 'active') return 'dot-active';
+    if (status.value === 'activating') return 'dot-activating';
+    if (status.value === 'deactivating' || stopTimedOut.value) return 'dot-deactivating';
     return 'dot-inactive';
 });
 
 const stateConfig = computed(() => {
-    if (hasFetchError.value) {
+    if (crashed.value && status.value === null) {
         return { color: '#ef4444', label: 'Ingen forbindelse' };
     }
+    if (crashed.value) return { color: '#ef4444', label: 'Lukket uventet' };
+    if (stopTimedOut.value) return { color: '#f97316', label: 'Stopper... (fastlåst)' };
+    if (status.value === null) return { color: '#9ca3af', label: 'Indlæser...' };
 
-    if (crashed.value) {
-        return { color: '#ef4444', label: 'Lukket uventet' };
-    }
-
-    if (stopTimedOut.value) {
-        return { color: '#f97316', label: 'Stopper... (fastlåst)' };
-    }
-
-    if (serverState.value === null) {
-        return { color: '#9ca3af', label: 'Indlæser...' };
-    }
-
-    switch (serverState.value) {
-        case 'active':
-            return { color: '#22c55e', label: 'Kører' };
+    switch (status.value) {
+        case 'active': return { color: '#22c55e', label: 'Kører' };
         case 'inactive':
-        case 'not-found':
-            return { color: '#9ca3af', label: 'Stoppet' };
-        case 'activating':
-            return { color: '#eab308', label: 'Starter...' };
-        case 'deactivating':
-            return { color: '#f97316', label: 'Stopper...' };
-        case 'failed':
-            return { color: '#ef4444', label: 'Fejl' };
-        default:
-            return { color: '#9ca3af', label: 'Ukendt' };
+        case 'not-found': return { color: '#9ca3af', label: 'Stoppet' };
+        case 'activating': return { color: '#eab308', label: 'Starter...' };
+        case 'deactivating': return { color: '#f97316', label: 'Stopper...' };
+        case 'failed': return { color: '#ef4444', label: 'Fejl' };
+        default: return { color: '#9ca3af', label: 'Ukendt' };
     }
 });
 
-const showStart = computed(() => {
-    return (
-        serverState.value === 'inactive' ||
-        serverState.value === 'not-found' ||
-        serverState.value === 'failed' ||
-        crashed.value
-    );
-});
-
-const showStop = computed(() => {
-    return serverState.value === 'active';
-});
-
-const showForceKill = computed(() => {
-    return stopTimedOut.value;
-});
-
-const showRetry = computed(() => {
-    return hasFetchError.value || !!actionError.value;
-});
+const showStart = computed(() =>
+    status.value === 'inactive' || status.value === 'not-found' || status.value === 'failed' || crashed.value,
+);
+const showStop = computed(() => status.value === 'active');
+const showForceKill = computed(() => stopTimedOut.value);
+const showRetry = computed(() => crashed.value || !!actionError.value);
 
 async function startServer() {
     actionInProgress.value = true;
@@ -95,12 +66,12 @@ async function startServer() {
     stopTimedOut.value = false;
     try {
         await $fetch('/api/mc/start', { method: 'POST' });
-        serverState.value = 'activating';
-        startPolling('active', POLL_TIMEOUT);
+        status.value = 'activating';
+        startPolling('active', 30000);
     } catch (e: any) {
         if (e?.response?.status === 409) {
-            serverState.value = 'activating';
-            startPolling('active', POLL_TIMEOUT);
+            status.value = 'activating';
+            startPolling('active', 30000);
         } else {
             actionError.value = 'Kunne ikke starte serveren';
             actionInProgress.value = false;
@@ -114,12 +85,12 @@ async function stopServer() {
     stopTimedOut.value = false;
     try {
         await $fetch('/api/mc/stop', { method: 'POST' });
-        serverState.value = 'deactivating';
-        startPolling('inactive', STOP_TIMEOUT);
+        status.value = 'deactivating';
+        startPolling('inactive', 60000);
     } catch (e: any) {
         if (e?.response?.status === 409) {
-            serverState.value = 'deactivating';
-            startPolling('inactive', STOP_TIMEOUT);
+            status.value = 'deactivating';
+            startPolling('inactive', 60000);
         } else {
             actionError.value = 'Kunne ikke stoppe serveren';
             actionInProgress.value = false;
@@ -133,92 +104,75 @@ async function forceKillServer() {
     try {
         await $fetch('/api/mc/kill', { method: 'POST' });
         stopTimedOut.value = false;
-        serverState.value = 'deactivating';
-        startPolling('inactive', POLL_TIMEOUT);
+        status.value = 'deactivating';
+        startPolling('inactive', 30000);
     } catch (e: any) {
         actionError.value = 'Kunne ikke slå serveren fra';
         actionInProgress.value = false;
     }
 }
 
-function startPolling(targetState: string, timeout: number) {
-    polling.value = true;
-    let elapsed = 0;
+function startPolling(target: string, timeout: number) {
     stopCrashMonitor();
+    let elapsed = 0;
     pollTimer = setInterval(async () => {
-        elapsed += POLL_INTERVAL;
+        elapsed += 2000;
         try {
             const res = await $fetch<{ state: string }>('/api/mc/status');
-            if (res.state === targetState) {
-                serverState.value = res.state;
+            if (res.state === target) {
+                status.value = res.state;
                 stopPolling();
             } else if (res.state === 'failed') {
-                serverState.value = res.state;
+                status.value = res.state;
                 stopPolling();
-                if (targetState === 'inactive') {
-                    crashed.value = true;
-                }
+                if (target === 'inactive') crashed.value = true;
             } else if (elapsed >= timeout) {
-                if (targetState === 'inactive') {
+                if (target === 'inactive') {
                     stopTimedOut.value = true;
                 } else {
-                    serverState.value = res.state;
+                    status.value = res.state;
                 }
                 stopPolling();
             }
         } catch {
-            if (elapsed >= timeout) {
-                stopPolling();
-            }
+            if (elapsed >= timeout) stopPolling();
         }
-    }, POLL_INTERVAL);
+    }, 2000);
+}
+
+function stopPolling() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    actionInProgress.value = false;
+    startCrashMonitor();
 }
 
 function startCrashMonitor() {
     stopCrashMonitor();
     crashTimer = setInterval(async () => {
-        if (crashed.value || stopTimedOut.value || polling.value) return;
-        if (!serverState.value) return;
-        const prev = serverState.value;
+        if (crashed.value || stopTimedOut.value || pollTimer) return;
+        if (!status.value) return;
+        const prev = status.value;
         try {
             const res = await $fetch<{ state: string }>('/api/mc/status');
-            serverState.value = res.state;
+            status.value = res.state;
             if (prev === 'active' && res.state !== 'active' && res.state !== 'activating') {
                 crashed.value = true;
             }
-        } catch {
-            // ignore
-        }
-    }, CRASH_CHECK_INTERVAL);
+        } catch { /* ignore */ }
+    }, 10000);
 }
 
 function stopCrashMonitor() {
-    if (crashTimer) {
-        clearInterval(crashTimer);
-        crashTimer = null;
-    }
+    if (crashTimer) { clearInterval(crashTimer); crashTimer = null; }
 }
-
-function stopPolling() {
-    if (pollTimer) {
-        clearInterval(pollTimer);
-        pollTimer = null;
-    }
-    polling.value = false;
-    actionInProgress.value = false;
-    startCrashMonitor();
-}
-
-onUnmounted(() => {
-    stopPolling();
-    stopCrashMonitor();
-});
 
 function retry() {
     actionError.value = null;
     crashed.value = false;
     stopTimedOut.value = false;
-    refresh();
+    $fetch<{ state: string }>('/api/mc/status')
+        .then(r => { status.value = r.state; })
+        .catch(() => {});
 }
 </script>
 
