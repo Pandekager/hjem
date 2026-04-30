@@ -23,37 +23,32 @@ async function getManager(): Promise<any> {
 }
 
 /**
- * Get the systemd unit proxy interface for a given unit name.
- * Resolves the unit name to its object path via GetUnit,
- * then returns the org.freedesktop.systemd1.Unit interface.
- */
-async function getUnitProxy(unitName: string): Promise<any> {
-  const manager = await getManager()
-  const unitPath = await manager.GetUnit(unitName)
-  const b = await getBus()
-  const unitProxy = await b.getProxyObject(
-    'org.freedesktop.systemd1',
-    unitPath,
-  )
-  return unitProxy.getInterface('org.freedesktop.systemd1.Unit')
-}
-
-/**
  * Get the current state of a systemd unit.
  * Returns one of: "active", "inactive", "activating", "deactivating", "failed"
  * Returns "not-found" if the unit does not exist or any error occurs.
  */
 export async function getUnitState(unitName: string): Promise<string> {
   try {
-    const unitIface = await getUnitProxy(unitName)
-    const state = await unitIface.Get(
+    const b = await getBus()
+    const unitPath = await getUnitPath(unitName)
+    const proxy = await b.getProxyObject(
+      'org.freedesktop.systemd1',
+      unitPath,
+    )
+    const propsIface = proxy.getInterface('org.freedesktop.DBus.Properties')
+    const activeState = await propsIface.Get(
       'org.freedesktop.systemd1.Unit',
       'ActiveState',
     )
-    return String(state).toLowerCase()
+    return String(activeState.value).toLowerCase()
   } catch {
     return 'not-found'
   }
+}
+
+async function getUnitPath(unitName: string): Promise<string> {
+  const manager = await getManager()
+  return manager.GetUnit(unitName)
 }
 
 /**

@@ -21,12 +21,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Server API
 
-- [ ] **API-01**: User can check Minecraft server status via `GET /api/mc/status`
-- [ ] **API-02**: User can start the Minecraft server via `POST /api/mc/start`
-- [ ] **API-03**: User can stop the Minecraft server via `POST /api/mc/stop`
-- [ ] **API-04**: API returns appropriate errors for invalid actions (e.g., 409 for already running)
-- [ ] **API-05**: API correctly reports all 5 systemd states: active, inactive, activating, deactivating, failed
-- [ ] **API-06**: API routes include origin check and rate limiting for LAN safety
+- [x] **API-01**: User can check Minecraft server status via `GET /api/mc/status`
+- [x] **API-02**: User can start the Minecraft server via `POST /api/mc/start`
+- [x] **API-03**: User can stop the Minecraft server via `POST /api/mc/stop`
+- [x] **API-04**: API returns appropriate errors for invalid actions (e.g., 409 for already running)
+- [x] **API-05**: API correctly reports all 5 systemd states: active, inactive, activating, deactivating, failed
+- [x] **API-06**: API routes include origin check and rate limiting for LAN safety
 
 ### Frontend Tile
 
@@ -81,12 +81,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOST-04 | Phase 1 | Complete |
 | DOCK-01 | Phase 2 | Complete |
 | DOCK-02 | Phase 2 | Complete |
-| API-01 | Phase 3 | Pending |
-| API-02 | Phase 3 | Pending |
-| API-03 | Phase 3 | Pending |
-| API-04 | Phase 3 | Pending |
-| API-05 | Phase 3 | Pending |
-| API-06 | Phase 3 | Pending |
+| API-01 | Phase 3 | Complete |
+| API-02 | Phase 3 | Complete |
+| API-03 | Phase 3 | Complete |
+| API-04 | Phase 3 | Complete |
+| API-05 | Phase 3 | Complete |
+| API-06 | Phase 3 | Complete |
 | TILE-01 | Phase 4 | Pending |
 | TILE-02 | Phase 4 | Pending |
 | TILE-03 | Phase 4 | Pending |

@@ -1,4 +1,4 @@
-import { getUnitState, stopUnit } from '~/server/utils/systemd'
+import { getUnitState, stopUnit } from '../../utils/systemd'
 
 export default defineEventHandler(async () => {
   const state = await getUnitState('mcserver.service')
