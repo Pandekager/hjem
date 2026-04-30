@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import MinecraftImg from '~/public/minecraft-better-minecraft.jpg';
+
 const { data, error: fetchError, refresh } = useFetch('/api/mc/status');
 
 const serverState = ref<string | null>(null);
@@ -97,7 +99,8 @@ function retry() {
 </script>
 
 <template>
-    <div class="tile">
+    <div class="tile has-image" :style="{ backgroundImage: `url('${MinecraftImg}')` }">
+        <div class="tile-overlay" />
         <div class="tile-glow" />
         <div class="tile-content">
             <div class="tile-heading">
@@ -169,6 +172,12 @@ function retry() {
     border: 1px solid rgba(126, 79, 51, 0.14);
     box-shadow: var(--shadow-card);
     isolation: isolate;
+    background-size: cover;
+    background-position: center;
+}
+
+.tile.has-image {
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 .tile:hover {
@@ -179,6 +188,18 @@ function retry() {
 .tile:focus-visible {
     outline: 3px solid rgba(255, 145, 77, 0.45);
     outline-offset: 4px;
+}
+
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(37, 18, 11, 0.82) 0%,
+        rgba(58, 27, 16, 0.24) 52%,
+        rgba(255, 255, 255, 0.04) 100%
+    );
+    pointer-events: none;
 }
 
 .tile-glow {
@@ -219,7 +240,7 @@ function retry() {
     height: 2.8rem;
     border-radius: 999px;
     font-size: 1.35rem;
-    background: rgba(255, 247, 240, 0.24);
+    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(6px);
 }
 
@@ -227,7 +248,8 @@ function retry() {
     font-size: 1.3rem;
     font-weight: 700;
     letter-spacing: 0.01em;
-    color: #40281c;
+    color: white;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.34);
 }
 
 .status-row {
@@ -247,14 +269,16 @@ function retry() {
 
 .status-label {
     font-size: 0.98rem;
-    color: #6d5444;
+    color: white;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.34);
 }
 
 .error-text {
     margin: 0;
     font-size: 0.82rem;
-    color: #ef4444;
+    color: #fca5a5;
     line-height: 1.4;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 .tile-actions {
@@ -273,7 +297,7 @@ function retry() {
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    background: rgba(255, 247, 240, 0.9);
+    background: rgba(255, 245, 235, 0.94);
     color: #613924;
     border: none;
     cursor: pointer;

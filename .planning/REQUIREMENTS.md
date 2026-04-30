@@ -30,13 +30,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Frontend Tile
 
-- [ ] **TILE-01**: User sees current server status (running/stopped/starting/stopping/error) on dashboard
-- [ ] **TILE-02**: User can start the server from the tile
-- [ ] **TILE-03**: User can stop the server from the tile
-- [ ] **TILE-04**: Tile shows transitional states (starting/stopping) with visual feedback
-- [ ] **TILE-05**: Tile shows error state with retry option when actions fail
-- [ ] **TILE-06**: Tile has visual consistency with existing tiles (photo background, dark overlay, glow)
-- [ ] **TILE-07**: Status auto-refreshes on page load
+- [x] **TILE-01**: User sees current server status (running/stopped/starting/stopping/error) on dashboard
+- [x] **TILE-02**: User can start the server from the tile
+- [x] **TILE-03**: User can stop the server from the tile
+- [x] **TILE-04**: Tile shows transitional states (starting/stopping) with visual feedback
+- [x] **TILE-05**: Tile shows error state with retry option when actions fail
+- [x] **TILE-06**: Tile has visual consistency with existing tiles (photo background, dark overlay, glow)
+- [x] **TILE-07**: Status auto-refreshes on page load
 
 ### P2 Polish
 
@@ -87,13 +87,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-04 | Phase 3 | Complete |
 | API-05 | Phase 3 | Complete |
 | API-06 | Phase 3 | Complete |
-| TILE-01 | Phase 4 | Pending |
-| TILE-02 | Phase 4 | Pending |
-| TILE-03 | Phase 4 | Pending |
-| TILE-04 | Phase 4 | Pending |
-| TILE-05 | Phase 4 | Pending |
-| TILE-06 | Phase 4 | Pending |
-| TILE-07 | Phase 4 | Pending |
+| TILE-01 | Phase 4 | Complete |
+| TILE-02 | Phase 4 | Complete |
+| TILE-03 | Phase 4 | Complete |
+| TILE-04 | Phase 4 | Complete |
+| TILE-05 | Phase 4 | Complete |
+| TILE-06 | Phase 4 | Complete |
+| TILE-07 | Phase 4 | Complete |
 | POLISH-01 | Phase 5 | Pending |
 | POLISH-02 | Phase 5 | Pending |
 | POLISH-03 | Phase 5 | Pending |
