@@ -7,6 +7,7 @@ Type=simple
 User=rasmus
 WorkingDirectory=/home/rasmus/Games/MCServer/BMC4_Server_Pack_v57.5/
 ExecStart=/usr/lib/jvm/java-17-openjdk/bin/java @user_jvm_args.txt @libraries/net/minecraftforge/forge/1.20.1-47.4.18/unix_args.txt nogui
+SuccessExitStatus=143
 Restart=on-failure
 RestartSec=30
 KillMode=process

@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Host Setup
 
-- [ ] **HOST-01**: Systemd service exists for the BMC4 Forge 1.20.1 Minecraft server at `/etc/systemd/system/mcserver.service`
-- [ ] **HOST-02**: Systemd service is disabled by default (server stays off until explicitly started)
-- [ ] **HOST-03**: Server can be started manually via `systemctl start mcserver`
-- [ ] **HOST-04**: Server can be stopped manually via `systemctl stop mcserver`
+- [x] **HOST-01**: Systemd service exists for the BMC4 Forge 1.20.1 Minecraft server at `/etc/systemd/system/mcserver.service`
+- [x] **HOST-02**: Systemd service is disabled by default (server stays off until explicitly started)
+- [x] **HOST-03**: Server can be started manually via `systemctl start mcserver`
+- [x] **HOST-04**: Server can be stopped manually via `systemctl stop mcserver`
 
 ### Docker Integration
 
@@ -75,10 +75,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HOST-01 | Phase 1 | Pending |
-| HOST-02 | Phase 1 | Pending |
-| HOST-03 | Phase 1 | Pending |
-| HOST-04 | Phase 1 | Pending |
+| HOST-01 | Phase 1 | Complete |
+| HOST-02 | Phase 1 | Complete |
+| HOST-03 | Phase 1 | Complete |
+| HOST-04 | Phase 1 | Complete |
 | DOCK-01 | Phase 2 | Pending |
 | DOCK-02 | Phase 2 | Pending |
 | API-01 | Phase 3 | Pending |
@@ -105,4 +105,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-04-29*
-*Last updated: 2026-04-29 after initial definition*
+*Last updated: 2026-04-30 — HOST-01..HOST-04 marked complete after Phase 1 execution*

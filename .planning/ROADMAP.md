@@ -10,7 +10,7 @@ Add an interactive Minecraft server tile to the Hjem Dashboard. The BMC4 Forge s
 
 ## Phases
 
-- [ ] **Phase 1: Host Setup** — Create systemd service for the BMC4 Forge 1.20.1 server on the host
+- [x] **Phase 1: Host Setup** — Create systemd service for the BMC4 Forge 1.20.1 server on the host
 - [ ] **Phase 2: Docker Integration** — Mount D-Bus socket and install dbus-next for host communication
 - [ ] **Phase 3: Server API Routes** — Build Nuxt server endpoints for status, start, and stop
 - [ ] **Phase 4: Frontend Tile** — Create interactive ServerTile.vue with status display and controls
@@ -30,7 +30,7 @@ Add an interactive Minecraft server tile to the Hjem Dashboard. The BMC4 Forge s
   5. Systemd service file exists at `/etc/systemd/system/mcserver.service` with correct Java arguments
 **Plans**: 1 plan
 **Plan list**:
-- [ ] 01-01-PLAN.md — Create systemd service + daemon-reload + disable + verify manual start/stop
+- [x] 01-01-PLAN.md — Create systemd service + daemon-reload + disable + verify manual start/stop
 **UI hint**: no
 
 ### Phase 2: Docker Integration
@@ -95,7 +95,7 @@ Each phase produces something the next consumes. Building out of order means tes
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Host Setup | 0/0 | Not started | - |
+| 1. Host Setup | 1/1 | Complete | 2026-04-30 |
 | 2. Docker Integration | 0/0 | Not started | - |
 | 3. Server API Routes | 0/0 | Not started | - |
 | 4. Frontend Tile | 0/0 | Not started | - |
