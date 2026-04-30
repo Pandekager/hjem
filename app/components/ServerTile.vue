@@ -24,6 +24,15 @@ watchEffect(() => {
 
 const hasFetchError = computed(() => !!fetchError.value);
 
+const dotClass = computed(() => {
+    if (hasFetchError.value || crashed.value) return 'dot-error';
+    const s = serverState.value;
+    if (s === 'active') return 'dot-active';
+    if (s === 'activating') return 'dot-activating';
+    if (s === 'deactivating' || stopTimedOut.value) return 'dot-deactivating';
+    return 'dot-inactive';
+});
+
 const stateConfig = computed(() => {
     if (hasFetchError.value) {
         return { color: '#ef4444', label: 'Ingen forbindelse' };
@@ -226,7 +235,7 @@ function retry() {
             <div class="status-row">
                 <span
                     class="status-dot"
-                    :style="{ backgroundColor: stateConfig.color }"
+                    :class="dotClass"
                 />
                 <span class="status-label">{{ stateConfig.label }}</span>
             </div>
@@ -389,6 +398,12 @@ function retry() {
     flex-shrink: 0;
     transition: background-color 0.3s ease;
 }
+
+.dot-active { background-color: #22c55e; }
+.dot-inactive { background-color: #9ca3af; }
+.dot-activating { background-color: #eab308; }
+.dot-deactivating { background-color: #f97316; }
+.dot-error { background-color: #ef4444; }
 
 .status-label {
     font-size: 0.98rem;
