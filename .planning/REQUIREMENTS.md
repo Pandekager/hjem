@@ -16,8 +16,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Docker Integration
 
-- [ ] **DOCK-01**: Host D-Bus socket is mounted into the container at `/run/dbus/system_bus_socket`
-- [ ] **DOCK-02**: `dbus-next` npm package is installed (pure JS D-Bus client)
+- [x] **DOCK-01**: Host D-Bus socket is mounted into the container at `/run/dbus/system_bus_socket`
+- [x] **DOCK-02**: `dbus-next` npm package is installed (pure JS D-Bus client)
 
 ### Server API
 
@@ -79,8 +79,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOST-02 | Phase 1 | Complete |
 | HOST-03 | Phase 1 | Complete |
 | HOST-04 | Phase 1 | Complete |
-| DOCK-01 | Phase 2 | Pending |
-| DOCK-02 | Phase 2 | Pending |
+| DOCK-01 | Phase 2 | Complete |
+| DOCK-02 | Phase 2 | Complete |
 | API-01 | Phase 3 | Pending |
 | API-02 | Phase 3 | Pending |
 | API-03 | Phase 3 | Pending |

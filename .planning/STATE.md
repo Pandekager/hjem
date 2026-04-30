@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 last_updated: "2026-04-30T09:20:01.006Z"
-last_activity: 2026-04-30 -- Phase 01 completed
+last_activity: 2026-04-30 -- Phase 02 completed
 progress:
   total_phases: 5
-  completed_phases: 0
-  total_plans: 1
-  completed_plans: 1
-  percent: 20
+  completed_phases: 2
+  total_plans: 2
+  completed_plans: 2
+  percent: 40
 ---
 
 # Project State
@@ -18,39 +18,40 @@ progress:
 **Project:** Hjem Dashboard
 **Milestone:** v1.0
 **Milestone Name:** Minecraft Server Tile
-**Status:** Phase 01 Complete
+**Status:** Phase 02 Complete
 **Progress:**
-  phases_complete: 1
+  phases_complete: 2
   phases_total: 5
-  plans_complete: 1
-  plans_total: 1
-  active_phase: 01-host-setup
+  plans_complete: 2
+  plans_total: 2
+  active_phase: 02-docker-integration
 
 ---
 
 ## Current Position
 
-Phase: 01 (Host Setup) — COMPLETE
+Phase: 02 (Docker Integration) — COMPLETE
 Plan: 1 of 1
-Status: Phase 01 completed — systemd service created and verified
-Last activity: 2026-04-30 -- Phase 01 completed
+Status: Phase 02 completed — D-Bus socket mounted + dbus-next installed + connectivity verified
+Last activity: 2026-04-30 -- Phase 02 completed
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-04-29)
 
 **Core value:** The family can access all their home services from one place without remembering URLs or IP addresses.
-**Current focus:** Phase 01 — Host Setup
+**Current focus:** Phase 02 — Docker Integration
 
 ## Performance Metrics
 
 | Metric | Value | Target |
 |--------|-------|--------|
-| Phases complete | 0/5 | 5 |
-| Plans created | 1/5 (estimated) | 5+ |
+| Phases complete | 2/5 | 5 |
+| Plans created | 2/5 (estimated) | 5+ |
 | Requirements mapped | 22/22 | 22 |
 | Requirements covered | 100% | 100% |
 | Phase 1 reqs assigned | 4/4 (HOST-01..04) | 4 |
+| Phase 2 reqs assigned | 2/2 (DOCK-01..02) | 2 |
 
 ## Accumulated Context
 
@@ -76,13 +77,12 @@ See: .planning/PROJECT.md (updated 2026-04-29)
 
 ## Session Continuity
 
-**Last session:** Phase 1 (Host Setup) execution
-**Next recommended action:** Proceed to Phase 2 (Docker Integration) via `/gsd-execute-phase 2`
+**Last session:** Phase 2 (Docker Integration) execution
+**Next recommended action:** Proceed to Phase 3 (Server API Routes) via `/gsd-execute-phase 3`
 
 ## Notes
 
 - Phase 1 complete: systemd service at `/etc/systemd/system/mcserver.service` — HOST-01..HOST-04 satisfied
-- Service includes `SuccessExitStatus=143` for clean Java SIGTERM handling
+- Phase 2 complete: D-Bus socket mounted in container + dbus-next@0.10.2 installed — DOCK-01, DOCK-02 satisfied
+- dbus-next API uses factory functions (`dbus.systemBus()`) not `MessageBus` class as initially assumed
 - Phase 4 (Frontend Tile) requires reading existing `AppTile.vue` for CSS/styling consistency
-- Phase 2 (Docker Integration) needs D-Bus socket mount and dbus-next install
-- D-Bus connection test script should be added during Phase 2 for debugging
