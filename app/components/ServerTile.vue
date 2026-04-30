@@ -140,19 +140,22 @@ function startPolling(targetState: string, timeout: number) {
         elapsed += POLL_INTERVAL;
         try {
             const res = await $fetch<{ state: string }>('/api/mc/status');
-            serverState.value = res.state;
-            if (res.state === targetState || res.state === 'failed') {
+            if (res.state === targetState) {
+                serverState.value = res.state;
                 stopPolling();
-                if (res.state === 'failed' && targetState === 'inactive') {
+            } else if (res.state === 'failed') {
+                serverState.value = res.state;
+                stopPolling();
+                if (targetState === 'inactive') {
                     crashed.value = true;
                 }
             } else if (elapsed >= timeout) {
                 if (targetState === 'inactive') {
                     stopTimedOut.value = true;
-                    stopPolling();
                 } else {
-                    stopPolling();
+                    serverState.value = res.state;
                 }
+                stopPolling();
             }
         } catch {
             if (elapsed >= timeout) {
