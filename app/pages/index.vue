@@ -59,6 +59,7 @@ const apps = [
                 :image="app.image"
                 :description="app.description"
             />
+            <ServerTile />
         </section>
     </main>
 </template>
