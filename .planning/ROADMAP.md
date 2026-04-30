@@ -28,7 +28,9 @@ Add an interactive Minecraft server tile to the Hjem Dashboard. The BMC4 Forge s
   3. User can stop the server via `sudo systemctl stop mcserver` and the Java process terminates cleanly
   4. Server does NOT start automatically on boot (service is disabled by default)
   5. Systemd service file exists at `/etc/systemd/system/mcserver.service` with correct Java arguments
-**Plans**: TBD
+**Plans**: 1 plan
+**Plan list**:
+- [ ] 01-01-PLAN.md — Create systemd service + daemon-reload + disable + verify manual start/stop
 **UI hint**: no
 
 ### Phase 2: Docker Integration
